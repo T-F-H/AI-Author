@@ -338,22 +338,31 @@ class TextEditor:
     prompt = prompt.strip() # Remove leading and trailing whitespace, which messes up the removal of the prompt from generation later
     model = self.model_txt.get()
     words_generated = len(self.ai.tokenizer.tokenize(prompt))# How many tokens the ai has generated so we can always generate max_length words more than the prompt.
-    # print("WORDS GENERATED SO FAR", words_generated)
-    # print("TOKENIZED: ",self.ai.tokenizer.tokenize(prompt))
+    print("WORDS GENERATED SO FAR", words_generated)
+    print("TOKENIZED: ",self.ai.tokenizer.tokenize(prompt))
     answers = self.ai.generate(n=int(self.options_sb.get()),prompt=prompt,model=model, max_length= words_generated + int(self.max_length_sb.get()), return_as_list=True, temperature=1)
     # https://www.educba.com/tkinter-menu/
     self.aimenu.delete(0,END) # Clear the previous commands
     for option in answers:
-      text = option[len(prompt):] # We need to cut off the front of the prompt, since we only care about the generated part
-      # print("CUT OFF: ", option[:len(prompt)])
-      self.aimenu.add_command(label=text, command=partial(self._option_selected, text), font=("arial",15,"normal"))
-    
-    # Open the menu
+      text = option[len(prompt.strip()):] # We need to cut off the front of the prompt, since we only care about the generated part
+      print("CUT OFF: ", option[:len(prompt.strip())])
+      self.aimenu.add_command(label=text, command=partial(self._option_selected, option), font=("arial",15,"normal"))
+    # Open the menuexperience
     self.aimenu.tk_popup(x=int(self.root.winfo_x()), y=int(self.root.winfo_y())+int(self.root.winfo_height()) - int(self.options_sb.get())*self.aimenu.yposition(1))
     self.aimenu.grab_release()
   
   def _option_selected(self, option):
-    self.txtarea.insert(END,option)
+    #DEBUG START
+    # prompt = self.txtarea.get("1.0",END)[:-1] # Get the text and cut of the newline that is at the end for some reason
+    # if prompt == "":
+    #   return
+    # prompt = prompt.strip() # Remove leading and trailing whitespace, which messes up the removal of the prompt from generation later
+    # old_num=len(self.ai.tokenizer.tokenize(prompt))
+    # new_num=len(self.ai.tokenizer.tokenize(option))
+    #DEBUG END
+    # print("OLD: ",old_num,"    NEW: ",new_num)
+    self.txtarea.delete(1.0, END)
+    self.txtarea.insert(1.0,option)
 
 # Creating TK Container
 root = Tk()
