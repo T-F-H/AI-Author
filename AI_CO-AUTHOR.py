@@ -1,26 +1,18 @@
-# Text editor code copied from https://www.codespeedy.com/create-a-text-editor-in-python/
-
-# Importing Required libraries & Modules for GUI
+# GUI
 from tkinter import *
 from tkinter import messagebox
 from tkinter import filedialog
-# Importing for Generation
+# Generation
 from aitextgen import aitextgen
 from functools import partial # To pass the right argument to commands of the aimenu
-# Defining TextEditor Class
-class TextEditor:
 
-  # Defining Constructor
+class TextEditor:
   def __init__(self,root):
-    # Assigning root
+
     self.root = root
-    # Title of the window
     self.root.title("AI CO-AUTHOR")
-    # Window Geometry
     self.root.geometry("1000x700+200+150")
-    # Initializing filename
     self.filename = None
-    # Declaring Title variable
     self.title = StringVar()
 
     # Creating the model input
@@ -328,7 +320,6 @@ class TextEditor:
     print("WORDS GENERATED SO FAR", words_generated)
     print("TOKENIZED: ",self.ai.tokenizer.tokenize(prompt))
     answers = self.ai.generate(n=int(self.options_sb.get()),prompt=prompt,model=model, max_length= words_generated + int(self.max_length_sb.get()), return_as_list=True, temperature=1)
-    # https://www.educba.com/tkinter-menu/
     self.aimenu.delete(0,END) # Clear the previous commands
     for option in answers:
       text = option[len(prompt.strip()):] # We need to cut off the front of the prompt, since we only care about the generated part
@@ -347,7 +338,6 @@ class TextEditor:
     # old_num=len(self.ai.tokenizer.tokenize(prompt))
     # new_num=len(self.ai.tokenizer.tokenize(option))
     #DEBUG END
-    # print("OLD: ",old_num,"    NEW: ",new_num)
     self.txtarea.delete(1.0, END)
     self.txtarea.insert(1.0,option)
 
