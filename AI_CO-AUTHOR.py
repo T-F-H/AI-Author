@@ -68,12 +68,12 @@ class TextEditor:
     #self.settitle()
 
     # Creating Menubar
-    self.menubar = Menu(self.root,font=("arial",15,"normal"),activebackground="skyblue")
+    self.menubar = Menu(self.root,font=("arial",32,"normal"),activebackground="skyblue")
     # Configuring menubar on root window
     self.root.config(menu=self.menubar)
 
     # Creating File Menu
-    self.filemenu = Menu(self.menubar,font=("arial",12,"normal"),activebackground="skyblue",tearoff=0)
+    self.filemenu = Menu(self.menubar,font=("arial",32,"normal"),activebackground="skyblue",tearoff=0)
     # Adding New file Command
     self.filemenu.add_command(label="New",accelerator="Ctrl+N",command=self.newfile)
     # Adding Open file Command
@@ -90,7 +90,7 @@ class TextEditor:
     self.menubar.add_cascade(label="File", menu=self.filemenu)
 
     # Creating Edit Menu
-    self.editmenu = Menu(self.menubar,font=("arial",12,"normal"),activebackground="skyblue",tearoff=0)
+    self.editmenu = Menu(self.menubar,font=("arial",32,"normal"),activebackground="skyblue",tearoff=0)
     # Adding Cut text Command
     self.editmenu.add_command(label="Cut",accelerator="Ctrl+X",command=self.cut)
     # Adding Copy text Command
@@ -117,7 +117,7 @@ class TextEditor:
     # Creating Scrollbar
     scrol_y = Scrollbar(self.root,orient=VERTICAL)
     # Creating Text Area
-    self.txtarea = Text(self.root,yscrollcommand=scrol_y.set,font=("arial",15,"normal"),state="normal",relief=GROOVE)
+    self.txtarea = Text(self.root,yscrollcommand=scrol_y.set,font=("arial",32,"normal"),state="normal",relief=GROOVE)
     # Packing scrollbar to root window
     scrol_y.pack(side=RIGHT,fill=Y)
     # Adding Scrollbar to text area
@@ -301,10 +301,7 @@ class TextEditor:
 
   def load_model(self): 
     model_folder = self.model_txt.get()
-    try:
-        self.ai = aitextgen(model=model_folder, config=model_folder)
-    except:
-        self.ai = aitextgen(model=model_folder)
+    self.ai = aitextgen(model=model_folder)
 
   # Defining the generate Function
   def generate(self,_key_stuff):
@@ -319,12 +316,12 @@ class TextEditor:
     words_generated = len(self.ai.tokenizer.tokenize(prompt))# How many tokens the ai has generated so we can always generate max_length words more than the prompt.
     print("WORDS GENERATED SO FAR", words_generated)
     print("TOKENIZED: ",self.ai.tokenizer.tokenize(prompt))
-    answers = self.ai.generate(n=int(self.options_sb.get()),prompt=prompt,model=model, max_length= words_generated + int(self.max_length_sb.get()), return_as_list=True, temperature=1)
+    answers = self.ai.generate(n=int(self.options_sb.get()),prompt=prompt,model=model, max_length= words_generated + int(self.max_length_sb.get()), return_as_list=True, temperature=float(self.temp_sb.get()))
     self.aimenu.delete(0,END) # Clear the previous commands
     for option in answers:
       text = option[len(prompt.strip()):] # We need to cut off the front of the prompt, since we only care about the generated part
       print("CUT OFF: ", option[:len(prompt.strip())])
-      self.aimenu.add_command(label=text, command=partial(self._option_selected, option), font=("arial",15,"normal"))
+      self.aimenu.add_command(label=text, command=partial(self._option_selected, option), font=("arial",32,"normal"))
     # Open the menuexperience
     self.aimenu.tk_popup(x=int(self.root.winfo_x()), y=int(self.root.winfo_y())+int(self.root.winfo_height()) - int(self.options_sb.get())*self.aimenu.yposition(1))
     self.aimenu.grab_release()
